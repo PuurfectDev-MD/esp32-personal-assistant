@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv*/
+*.env
+
+# VS Code
+.vscode/
+
+# Thonny / Arduino
+*.ino~
+*.bin
+*.elf
+*.hex
+.build/
+
+# General
+.DS_Store
+Thumbs.db
