@@ -39,7 +39,7 @@ cal.connect_wifi()
     
 
 while working:
-    print(main_button.value())
+    #print(main_button.value())
   
 
     coords = touch.get_touch()
@@ -68,7 +68,8 @@ while working:
             ui_module.side_panel()
             ui_module.side_panel_open = True
         else:
-            display.fill_hrect(0, 0, 200, 240, 0x0000)  # BLACK
+            #display.fill_hrect(0, 0, 200, 240, 0x0000)  # BLACK
+            ui_module.home()
             ui_module.side_panel_button()    
             ui_module.side_panel_open = False
 

@@ -1,10 +1,10 @@
 from PIL import Image
 
 # --- Configuration ---
-input_file = "tick.png"     # Your PNG image
-output_file = "micmute84-106.raw"    # Output raw file
-width = 84               # Target width
-height = 106               # Target height
+input_file = "alarmclock.png"     # Your PNG image
+output_file = "alarmclock64-64.raw"    # Output raw file
+width = 64               # Target width
+height = 64               # Target height
 
 # --- Open and resize image ---
 img = Image.open(input_file).convert("RGB")

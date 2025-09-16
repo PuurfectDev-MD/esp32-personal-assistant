@@ -154,6 +154,21 @@ def home():
 
     # Draw initial button
     side_panel_button()
+    
+    calendar_sprite = Sprite("images/calendar64-64.raw", 64, 64, display, 20, 60)
+    calendar_sprite.draw()
+    
+    schedeule_sprite = Sprite("images/scheduleicon64-64.raw", 64, 64, display, 90, 60)
+    schedeule_sprite.draw()
+    
+    micicon_sprite = Sprite("images/micicon64-64.raw", 64, 64, display, 160, 60)
+    micicon_sprite.draw()
+    
+    alarm_sprite = Sprite("images/alarmclock64-64.raw", 64, 64, display, 230, 60)
+    alarm_sprite.draw()
+
+    
+    
 
 
 def draw_clock(t):
