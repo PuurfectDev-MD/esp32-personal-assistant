@@ -158,7 +158,7 @@ def home():
     calendar_sprite = Sprite("images/calendar64-64.raw", 64, 64, display, 20, 60)
     calendar_sprite.draw()
     
-    schedeule_sprite = Sprite("images/scheduleicon64-64.raw", 64, 64, display, 90, 60)
+    schedeule_sprite = Sprite("images/schedule64-64.raw", 64, 64, display, 90, 60)
     schedeule_sprite.draw()
     
     micicon_sprite = Sprite("images/micicon64-64.raw", 64, 64, display, 160, 60)
