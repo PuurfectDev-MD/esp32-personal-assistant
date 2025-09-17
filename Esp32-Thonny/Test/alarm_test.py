@@ -1,4 +1,3 @@
-
 import time
 from machine import Pin
 import utime
@@ -8,7 +7,7 @@ import calendar_module as cal
 import assistant_module as assistant
 
 
-alarms = []
+alarms = [(19,41)]
 
 def set_alarm(alarm_time):
     global alarms
@@ -27,7 +26,7 @@ def check_alarm(time):
     
     for alarm in alarms:
         if (hour, minute) == alarm:
-            print("Alarm is enabled")
+            print("Alarm time detected and sound is enabled")
             #produces an alarm sound
             return alarm
     
@@ -56,3 +55,4 @@ def delete_alarm(time_to_delete):
 
 
     
+

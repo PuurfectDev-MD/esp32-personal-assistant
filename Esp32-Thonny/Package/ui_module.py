@@ -8,7 +8,7 @@ from xpt2046 import Touch
 from ds3231 import DS3231
 import setup
 from setup import display, rtc, font, font2, rtc_power, spi, touch, colors, arcadepix, bally, Sprite
-
+import alarm_test
 saved_time = []
 
 rtc_power.value(1)  # Power ON at start
@@ -182,6 +182,7 @@ def update_time():
     if utime.ticks_diff(utime.ticks_ms(), last_update) >= 30000:  # 30s passed
         t = read_rtc_time()
         print("Time:", t)
+        #alarm_test.check_alarm(t)   # for alarm
         saved_time = t
       # Draw to TFT
         if t:
@@ -314,3 +315,5 @@ def assistantui():
     
         
     
+
+

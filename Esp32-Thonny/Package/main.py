@@ -5,7 +5,7 @@ import utime
 from setup import display, rtc, font, font2, rtc_power, spi, touch
 import ui_module
 import calendar_module as cal
-
+import alarm_test
 
 
 WHITE   = 0xFFFF
