@@ -5,10 +5,10 @@ from machine import Pin
 import network
 import utime
 from setup import display, rtc, font, font2, rtc_power, spi, touch, WIFI_SSID, WIFI_PASS, Sprite
-from setup import BROKER_IP, CLIENT_ID, TOPIC, CONTROL_TOPIC
+from setup import BROKER_IP, CLIENT_ID, TOPIC, CONTROL_TOPIC, AI_TOPIC 
 import ui_module
 import calendar_module as cal
-
+import ai_module
 
 
 # LED pin
@@ -34,6 +34,10 @@ def sub_cb(topic, msg):
         led.value(1)
     elif msg.decode().lower() == "led off":
         led.value(0)
+        
+    elif msg.decode().lower() == "connect ai":
+        connect_response = ai_module.ask_gpt("Introduce yourself with a greeting in short.")
+        client.publish(b"{AI_TOPIC}", b"{connect_response}")
         
 # Connect/reconnect MQTT
 def connect_mqtt():  # secures a conenction with the broker
@@ -87,7 +91,7 @@ def active_listening():
 def assistant_begin():
     display.clear()
     display.fill_hrect(0, 0, 320, 240, BLACK)
-    ui_module.update_time()
+  
     
     client = connect_mqtt()
     print("Connected to mqtt")

@@ -9,9 +9,10 @@ import paho.mqtt.client as mqtt
 BROKER_IP = "192.168.0.116"   # your PC broker IP
 TOPIC = "jarvis/responses"
 CONTROL_TOPIC = "jarvis/control"
-
+AI_RESPONSE = "ai/responses"
 listening = False
 
+ai_speaking = False
 
 
 r = sr.Recognizer()
@@ -27,13 +28,22 @@ engine.setProperty('rate', rate+50) #setting the rate
 
 
 def on_message(client, userdata, msg):
-    global listening
-    print(f"📩 Control message: {msg.payload.decode()}")
-    if msg.topic == CONTROL_TOPIC and msg.payload.decode() == "wake":
-        print("⚡ Wake command received from ESP32")
-        listening = True
-    if msg.topic ==CONTROL_TOPIC and msg.payload.decode() == "sleep":
-        listening = False
+    global listening, ai_speaking
+    topic = msg.topic
+    payload = msg.payload.decode()
+    print(f"📩 Message received on {topic}: {payload}")
+
+    if topic == CONTROL_TOPIC:
+        if payload == "wake":
+            print("⚡ Wake command received from ESP32")
+            listening = True
+        elif payload == "sleep":
+            listening = False
+
+    elif topic == AI_RESPONSE:
+        ai_speaking = True
+        Speak(payload)  # speak AI response immediately
+        ai_speaking = False
 
 
 def send_to_mqtt(message):
@@ -82,6 +92,13 @@ def recognize_main():
         elif "chantal" in data and "think" in data:
             print("You want to know about her?")
             Speak("Chantal is smart and pretty. Did u not know that?")
+            
+        elif "connect" in data and "ai" in data:
+            print("Connecting with AI")
+            Speak("Connecting with AI sir. Give me a moment.")
+            send_to_mqtt("Connect AI")
+            global listening
+            listening = False
 
         elif "end conversation" in data:
             Speak("Ending our chat. Have a nice day, sir")
@@ -121,10 +138,11 @@ client = mqtt.Client(client_id="jarvis_pc")
 client.on_message = on_message
 client.connect(BROKER_IP, 1883, 60)
 client.subscribe(CONTROL_TOPIC)
+client.subscribe(AI_RESPONSE) 
 client.loop_start()
 
 
 while True:
-    if listening:
+    if listening and not ai_speaking:
         wakeupCall()
     time.sleep(0.2)

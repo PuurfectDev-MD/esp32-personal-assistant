@@ -6,6 +6,7 @@ from setup import display, rtc, font, font2, rtc_power, spi, touch
 import ui_module
 import calendar_module as cal
 import alarm_test
+import assistant_module
 
 
 WHITE   = 0xFFFF
@@ -54,9 +55,7 @@ while working:
                 ui_module.today_schedule()
                
             if menu_select ==2:
-                ui_module.to_do_screen()
-                events = cal.get_calendar_events_today() 
-                cal.process_events(events)
+                assistant_module.assistant_begin()
                 
     else:
         x,y =0,0
