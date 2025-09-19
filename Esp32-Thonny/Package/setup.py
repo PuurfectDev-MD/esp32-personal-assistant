@@ -20,10 +20,10 @@ WIFI_PASS = "passwordMANISH24"
 # MQTT broker
 BROKER_IP = "192.168.0.116"
 CLIENT_ID = "esp32_client"
-TOPIC = b"jarvis/responses"
-CONTROL_TOPIC = "jarvis/control"
-
-
+JARVIS_RESPONSE = "jarvis/responses"
+CONTROL_TOPIC   = "jarvis/control"
+AI_RESPONSE     = "ai/responses"
+AI_REQUEST      = "ai/requests"
 
 # ======= Server Configurable Variables =======
 TTS_SERVER_IP = "192.168.0.116"
@@ -171,4 +171,5 @@ class Sprite:
 
         except OSError as e:
             print(f"❌ Error drawing sprite {self.path}: {e}")
+
 

@@ -5,7 +5,7 @@ from machine import Pin
 import network
 import utime
 from setup import display, rtc, font, font2, rtc_power, spi, touch, WIFI_SSID, WIFI_PASS, Sprite
-from setup import BROKER_IP, CLIENT_ID, TOPIC, CONTROL_TOPIC, AI_TOPIC 
+from setup import BROKER_IP, CLIENT_ID, JARVIS_RESPONSE, CONTROL_TOPIC, AI_RESPONSE , AI_REQUEST
 import ui_module
 import calendar_module as cal
 import ai_module
@@ -29,15 +29,25 @@ main_button = Pin(13, Pin.IN, Pin.PULL_UP)  # active LOW
 
 
 def sub_cb(topic, msg):
-    print("📩 Message received:", msg.decode())
-    if msg.decode().lower() == "led on":
-        led.value(1)
-    elif msg.decode().lower() == "led off":
-        led.value(0)
-        
-    elif msg.decode().lower() == "connect ai":
-        connect_response = ai_module.ask_gpt("Introduce yourself with a greeting in short.")
-        client.publish(b"{AI_TOPIC}", b"{connect_response}")
+    topic = topic.decode()
+    msg = msg.decode()
+    print("📩 Message received:", msg)
+
+    if topic == CONTROL_TOPIC:
+        if msg.lower() == "led on":
+            led.value(1)
+        elif msg.lower() == "led off":
+            led.value(0)
+        elif msg.lower() == "connect ai":
+            connect_response = ai_module.ask_gpt("Introduce yourself with a greeting in short.")
+            print("ESP32 got AI's response")
+            client.publish(AI_RESPONSE, connect_response)
+
+    elif topic == AI_REQUEST:
+        ai_response = ai_module.ask_gpt(msg)
+        print("Got the response from AI")
+        client.publish(AI_RESPONSE, ai_response)
+
         
 # Connect/reconnect MQTT
 def connect_mqtt():  # secures a conenction with the broker
@@ -47,7 +57,9 @@ def connect_mqtt():  # secures a conenction with the broker
             client = MQTTClient(CLIENT_ID, BROKER_IP)  
             client.set_callback(sub_cb)  #after a msg is recieved it calls this function
             client.connect()
-            client.subscribe(TOPIC) 
+            client.subscribe(JARVIS_RESPONSE)
+            client.subscribe(CONTROL_TOPIC)
+            client.subscribe(AI_REQUEST)
             print("✅ MQTT connected & subscribed")
             #cal.speakEvents("Say Jarvis or Hey Jarvis to wake")  
             return client
@@ -92,7 +104,6 @@ def assistant_begin():
     display.clear()
     display.fill_hrect(0, 0, 320, 240, BLACK)
   
-    
     client = connect_mqtt()
     print("Connected to mqtt")
     print("Assistant on")
@@ -105,5 +116,7 @@ def assistant_begin():
         
     
     
+
+
 
 
