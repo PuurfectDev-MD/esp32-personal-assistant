@@ -12,7 +12,7 @@ AI_RESPONSE = "ai/responses"
 AI_REQUEST = "ai/requests"
 
 listening = False
-ai_speaking = False
+speaking = False
 ai_mode= False
 
 r = sr.Recognizer()  #keeps the laptops mic as the source for the audio
@@ -28,7 +28,7 @@ engine.setProperty('rate', rate+50) #setting the rate
 
 
 def on_message(client, userdata, msg):  # when the broker recieves a message
-    global listening, ai_speaking
+    global listening, speaking
     topic = msg.topic
     payload = msg.payload.decode()
     print(f"📩 Message received on {topic}: {payload}")
@@ -41,9 +41,7 @@ def on_message(client, userdata, msg):  # when the broker recieves a message
             listening = False
 
     elif topic == AI_RESPONSE:
-        ai_speaking = True
         Speak(payload)  # speak AI response immediately
-        ai_speaking = False
 
 
 def send_to_mqtt(topic, message):  #to send data to a stream in the broker
@@ -53,10 +51,12 @@ def send_to_mqtt(topic, message):  #to send data to a stream in the broker
 
 
 def Speak(text):  # uses text to speech lib
-    print(f"Jarvis: {text}")
+    global speaking
+    speaking = True
     engine.say(text)
-    time.sleep(2)
     engine.runAndWait()
+    print(f"Jarvis: {text}")
+    speaking = False
   
 
 def recognize_main():  #to recognize commands using the audio source
@@ -72,7 +72,6 @@ def recognize_main():  #to recognize commands using the audio source
 
         if "how are you" in data:
             Speak("I am fine, sir!")
-            time.sleep(1)
         elif "hello" in data:
             hour = datetime.datetime.now().hour
             if 0 <= hour < 12:
@@ -129,6 +128,7 @@ def wakeupCall():   # to wake the assistant up
         print(f" You: {speech_as_text}")
         if "jarvis" in speech_as_text or "hey jarvis" in speech_as_text or "wake up" in speech_as_text:
           Speak("Yes sir?")
+          time.sleep(0.6)
           recognize_main()  #main command detection function
     except sr.UnknownValueError:
            pass
@@ -146,10 +146,10 @@ client.loop_start()
 
 
 while True:
-    if listening and not ai_speaking and not ai_mode: #only listens to the wakeup call if not speaking
+    if listening and not speaking and not ai_mode: #only listens to the wakeup call if not speaking
         wakeupCall()
-    if ai_mode and not ai_speaking:  # for ai conversations until ended 
-        while ai_mode and not ai_speaking:
+    if ai_mode and not speaking:  # for ai conversations until ended 
+        while ai_mode and not speaking:
             print("Listening for ai query")
             with sr.Microphone() as source:
                 r.adjust_for_ambient_noise(source)
@@ -158,7 +158,6 @@ while True:
                 data = r.recognize_google(audio).lower()
                 print(f" You: {data}")
                 send_to_mqtt(AI_REQUEST, data)
-                ai_speaking = True
 
                 if "go back" in data or "end chat" in data or "close chat" in data:
                     print("Closing connection with AI")
@@ -169,3 +168,4 @@ while True:
                 pass
 
     time.sleep(0.2)
+
