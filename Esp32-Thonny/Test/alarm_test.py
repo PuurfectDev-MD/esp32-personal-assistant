@@ -51,8 +51,6 @@ def delete_alarm(time_to_delete):
     print("Alarm succesfully deleted")
     
     
-    
+  
 
-
-    
 

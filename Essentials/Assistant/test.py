@@ -157,12 +157,15 @@ while True:
             try:
                 data = r.recognize_google(audio).lower()
                 print(f" You: {data}")
-                send_to_mqtt(AI_REQUEST, data)
 
+                
                 if "go back" in data or "end chat" in data or "close chat" in data:
                     print("Closing connection with AI")
                     Speak("Closing connection with AI")
                     ai_mode = False
+                else:
+                    send_to_mqtt(AI_REQUEST, data)
+
                 
             except sr.UnknownValueError:
                 pass

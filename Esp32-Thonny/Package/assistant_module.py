@@ -7,6 +7,7 @@ import utime
 from setup import display, rtc, font, font2, rtc_power, spi, touch, WIFI_SSID, WIFI_PASS, Sprite
 from setup import BROKER_IP, CLIENT_ID, JARVIS_RESPONSE, CONTROL_TOPIC, AI_RESPONSE , AI_REQUEST
 import ui_module
+
 import calendar_module as cal
 import ai_module
 
@@ -24,6 +25,7 @@ RED     = 0xF800
 GREEN   = 0x07E0
 
 working=  False
+ai_mode = False
 main_button = Pin(13, Pin.IN, Pin.PULL_UP)  # active LOW
 
 
@@ -39,14 +41,20 @@ def sub_cb(topic, msg):
         elif msg.lower() == "led off":
             led.value(0)
         elif msg.lower() == "connect ai":
+            global ai_mode
+            ai_mode = True
             connect_response = ai_module.ask_gpt("Introduce yourself with a greeting in short.")
+            ui_module.display_ai_response(f"AI: {connect_response}")
             print("ESP32 got AI's response")
             client.publish(AI_RESPONSE, connect_response)
 
     elif topic == AI_REQUEST:
+        ui_module.display_ai_response(f"You: {msg}")
         ai_response = ai_module.ask_gpt(msg)
-        print("Got the response from AI")
+        ui_module.display_ai_response(f"AI: {ai_response}")
         client.publish(AI_RESPONSE, ai_response)
+        
+        
 
         
 # Connect/reconnect MQTT
@@ -96,7 +104,7 @@ def active_listening():
     mutemic.draw()
     assistant_led(0)
     client.publish(b"jarvis/control", b"sleep")
-    time.sleep(2)
+    time.sleep(1)
     
     
 
@@ -108,14 +116,16 @@ def assistant_begin():
     print("Connected to mqtt")
     print("Assistant on")
     active_listening()
-    while True:
+    while not ai_mode:  # this seems not right
         if main_button.value() == 0:
             print("Assistant on")
             active_listening()
         
-        
-    
-    
+    while ai_mode:
+         aimode_ui()
+         
+
+
 
 
 

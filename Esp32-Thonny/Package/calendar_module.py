@@ -200,7 +200,7 @@ def get_calendar_events_today(max_retries=3, timeout_sec=10):
 
         
    
-def get_calendar_events():
+def get_calendar_events(): #for a year
     try:
         event_list = []
         print("\nFetching events...")

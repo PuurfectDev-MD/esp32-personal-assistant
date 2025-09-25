@@ -313,7 +313,49 @@ def assistantui():
     mutemic.draw()
     
     
-        
+def aimode_ui():
+    #draw a small mic at the top right of the screen
+    #with the same mute and unmute fuctionality
+    display.fill_hrect(0, 0, 320, 240, BLACK) #clear
     
+    assistant_led(1)
+    mic_sprite = Sprite("images/mic84-106.raw", 84, 106, display, 120, 80)
+    mic_sprite.draw()
+    time.sleep(0.1)
+    print("Listening.. for ai query")
+    display.draw_text(270, 210, "Listening...", arcadepix, WHITE)
+    display.draw_text(80,40, "AI MODE", arcadepix, WHITE) 
+ 
+    while main_button.value() == 1:
+        talk_to_assistant()
+        
+    print("AI OFf")
+    mutemic = Sprite("images/micmute84-106.raw", 84, 106, display, 120, 80)
+    mutemic.draw()
+    assistant_led(0)
+    client.publish(b"jarvis/control", b"sleep")
+    time.sleep(1)
+    
+        
+def display_ai_response(response):
+    display.fill_hrect(0, 0, 320, 240, BLACK)
+    x, y= 0, 20
+    max_width = 300
+    line_height = 20
+    
+    for i,word in enumerate(response.split()):
+        word_len = len(word) * 12
+        if x + word_len > max_width:
+            x = 0
+            y +=line_height
+        if  y > 220:
+            break
+        
+        display.draw_text(x, y, word, font, WHITE)
+        x = x+word_len + 30
+        time.sleep(0.05)
 
+
+    
+    
 
