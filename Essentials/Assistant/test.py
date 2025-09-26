@@ -3,6 +3,7 @@ import time
 import datetime
 import speech_recognition as sr # for speech recognition
 import paho.mqtt.client as mqtt
+from tts import init_speak
 
 # MQTT Settings
 BROKER_IP = "192.168.0.116"   # broker IP
@@ -12,23 +13,16 @@ AI_RESPONSE = "ai/responses"
 AI_REQUEST = "ai/requests"
 
 listening = False
-speaking = False
 ai_mode= False
+speaking_queue = False
 
 r = sr.Recognizer()  #keeps the laptops mic as the source for the audio
 keywords = [("jarvis", 1), ("hey jarvis", 1), ("wake up", 1), ("Maya",1)]  # wake up words
 
-rate =100  # voice speed
-engine = pyttsx3.init()  
-voices = engine.getProperty('voices')  #get the different voices
-engine.setProperty('voice', voices[0].id) #selection and setting of the voice
-engine.setProperty('rate', rate+50) #setting the rate
-
-
 
 
 def on_message(client, userdata, msg):  # when the broker recieves a message
-    global listening, speaking
+    global listening, speaking_queue
     topic = msg.topic
     payload = msg.payload.decode()
     print(f"📩 Message received on {topic}: {payload}")
@@ -42,6 +36,7 @@ def on_message(client, userdata, msg):  # when the broker recieves a message
 
     elif topic == AI_RESPONSE:
         Speak(payload)  # speak AI response immediately
+        speaking_queue = False
 
 
 def send_to_mqtt(topic, message):  #to send data to a stream in the broker
@@ -51,12 +46,8 @@ def send_to_mqtt(topic, message):  #to send data to a stream in the broker
 
 
 def Speak(text):  # uses text to speech lib
-    global speaking
-    speaking = True
-    engine.say(text)
-    engine.runAndWait()
+    init_speak(text)
     print(f"Jarvis: {text}")
-    speaking = False
   
 
 def recognize_main():  #to recognize commands using the audio source
@@ -146,10 +137,10 @@ client.loop_start()
 
 
 while True:
-    if listening and not speaking and not ai_mode: #only listens to the wakeup call if not speaking
+    if listening  and not ai_mode: #only listens to the wakeup call if not speaking
         wakeupCall()
-    if ai_mode and not speaking:  # for ai conversations until ended 
-        while ai_mode and not speaking:
+    if ai_mode :  # for ai conversations until ended 
+        while ai_mode and not speaking_queue:
             print("Listening for ai query")
             with sr.Microphone() as source:
                 r.adjust_for_ambient_noise(source)
@@ -163,8 +154,11 @@ while True:
                     print("Closing connection with AI")
                     Speak("Closing connection with AI")
                     ai_mode = False
+                    listening= True
+
                 else:
                     send_to_mqtt(AI_REQUEST, data)
+                    speaking_queue = True
 
                 
             except sr.UnknownValueError:

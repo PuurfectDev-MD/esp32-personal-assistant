@@ -27,12 +27,15 @@ def check_for_tasks():
             task_endt = event["time_end"]
             task_status = event["completed"]
             
-            taskhour, taskminute = map(int, task_startt.split(":"))
-            task_early_remindert = subtract_minutes((hour,minute), 30) #time
+            taskhour, taskminute = map(int, task_startt.split(":"))  # coverting string to time format
+            task_early_remindert = subtract_minutes((taskhour,taskminute), 30) #task time -30 min
             
-            currenthour, currentminute = ui_module.time_tuple[3:5]
+            reminder_hour, reminder_minute = task_early_remindert
+            currenthour, currentminute = ui_module.time_tuple[3:5]  # current time
             
-            if (currenthour, currentminute) == (taskhour, taskminute):
-                # reminder notification
-            if (currenthour, currentminute) == (taskhour, taskminute):
+            if (currenthour, currentminute) == (reminder_hour, reminder_minute) and task_status not "Yes":
+                task_reminder(event)
+                # reminder 
+            if (currenthour, currentminute) == (taskhour, taskminute) and task_status not "Yes":
+                task_notification(event)
                 #notification to begin task

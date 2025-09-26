@@ -9,6 +9,7 @@ from ds3231 import DS3231
 import setup
 from setup import display, rtc, font, font2, rtc_power, spi, touch, colors, arcadepix, bally, Sprite
 import alarm_test
+import assistant_module
 saved_time = []
 
 rtc_power.value(1)  # Power ON at start
@@ -327,14 +328,14 @@ def aimode_ui():
     display.draw_text(80,40, "AI MODE", arcadepix, WHITE) 
  
     while main_button.value() == 1:
-        talk_to_assistant()
+        assistant_module.talk_to_assistant()
         
     print("AI OFf")
     mutemic = Sprite("images/micmute84-106.raw", 84, 106, display, 120, 80)
     mutemic.draw()
     assistant_led(0)
     client.publish(b"jarvis/control", b"sleep")
-    time.sleep(1)
+    time.sleep(0.4)
     
         
 def display_ai_response(response):
@@ -349,13 +350,38 @@ def display_ai_response(response):
             x = 0
             y +=line_height
         if  y > 220:
-            break
+            display.fill_hrect(0,0,320,240, BLACK)
+            x,y = 0,20
         
         display.draw_text(x, y, word, font, WHITE)
-        x = x+word_len + 30
+        x = x+word_len + 15
         time.sleep(0.05)
 
 
+# 
+# def task_notification(task[], time):
+#     name= task["task"]
+#     priority = task["priority"]
+#     endtime = task["time_end"]
+#     endhour, endminute = map(int, task_startt.split(":"))  # coverting string to time format
+#     # ui elements
+#     display.fill_hrect(0,0,320,240, BLACK)
+#     #timer until the task finishes *full screen
+#     #option to quit
+#     #option to skip
+#     
+#     
+# def task_reminder(task[]):
+#     name = task["task"]
+#     priority = task["priority"]
+#     endtime = task["time_end"]
+#     endhour, endminute = map(int, task_startt.split(":"))
+#     
+#     
+#     # ui elements
+#     #small rectangular popup showing info
+#     
     
-    
+
+
 
