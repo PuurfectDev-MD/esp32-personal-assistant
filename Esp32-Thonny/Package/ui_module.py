@@ -10,6 +10,7 @@ import setup
 from setup import display, rtc, font, font2, rtc_power, spi, touch, colors, arcadepix, bally, Sprite
 import alarm_test
 import assistant_module
+
 saved_time = []
 
 rtc_power.value(1)  # Power ON at start
@@ -319,7 +320,7 @@ def aimode_ui():
     #with the same mute and unmute fuctionality
     display.fill_hrect(0, 0, 320, 240, BLACK) #clear
     
-    assistant_led(1)
+    assistant_module.assistant_led(1)
     mic_sprite = Sprite("images/mic84-106.raw", 84, 106, display, 120, 80)
     mic_sprite.draw()
     time.sleep(0.1)
@@ -330,10 +331,11 @@ def aimode_ui():
     while main_button.value() == 1:
         assistant_module.talk_to_assistant()
         
+    display.draw_text(270, 210, "Muted", arcadepix, WHITE)
     print("AI OFf")
     mutemic = Sprite("images/micmute84-106.raw", 84, 106, display, 120, 80)
     mutemic.draw()
-    assistant_led(0)
+    assistant_module.assistant_led(0)
     client.publish(b"jarvis/control", b"sleep")
     time.sleep(0.4)
     
@@ -349,7 +351,7 @@ def display_ai_response(response):
         if x + word_len > max_width:
             x = 0
             y +=line_height
-        if  y > 220:
+        if  y > 210:
             display.fill_hrect(0,0,320,240, BLACK)
             x,y = 0,20
         

@@ -31,6 +31,7 @@ main_button = Pin(13, Pin.IN, Pin.PULL_UP)  # active LOW
 
 
 def sub_cb(topic, msg):
+    global ai_mode
     topic = topic.decode()
     msg = msg.decode()
     print("📩 Message received:", msg)
@@ -41,18 +42,22 @@ def sub_cb(topic, msg):
         elif msg.lower() == "led off":
             led.value(0)
         elif msg.lower() == "connect ai":
-            global ai_mode
+           
             ai_mode = True
+            ui_module.aimode_ui()
             connect_response = ai_module.ask_gpt("Introduce yourself with a greeting in short.")
-            ui_module.display_ai_response(f"AI: {connect_response}")
             print("ESP32 got AI's response")
             client.publish(AI_RESPONSE, connect_response)
+            ui_module.display_ai_response(f"AI: {connect_response}")
+        elif msg.lower() == "assistant mode":
+            ai_mode = False
+            print("You can now talk to jarvis")
 
     elif topic == AI_REQUEST:
         ui_module.display_ai_response(f"You: {msg}")
         ai_response = ai_module.ask_gpt(msg)
-        ui_module.display_ai_response(f"AI: {ai_response}")
         client.publish(AI_RESPONSE, ai_response)
+        ui_module.display_ai_response(f"AI: {ai_response}")
         
         
 
@@ -122,7 +127,7 @@ def assistant_begin():
             active_listening()
         
     while ai_mode:
-         aimode_ui()
+         ui_module.aimode_ui()
          
 
 

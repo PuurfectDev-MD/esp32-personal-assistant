@@ -18,14 +18,17 @@ def ask_gpt(prompt):
         "Authorization": f"Bearer {API_KEY}",
         "Content-Type": "application/json"
     }
-    messages = [
+    
+    body = ujson.dumps({
+        "model": "openai/gpt-3.5-turbo",
+        "messages" : [
         {
             "role": "system",
             "content": (
                 "You are a helpful assistant. "
-                "The user's name is Manish. "
+                "The user's name is Kabber. "
                 "Always answer in less than 120 words."
-                "Keep the answer information packed but concise"
+                "Keep the answers information packed but concise"
             )
         },
         {
@@ -34,9 +37,6 @@ def ask_gpt(prompt):
         }
     ]
      
-    body = ujson.dumps({
-        "model": "openai/gpt-3.5-turbo",
-        "messages": [{"role": "user", "content": prompt}]
     })
     
     response = urequests.post(URL, headers=headers, data=body)

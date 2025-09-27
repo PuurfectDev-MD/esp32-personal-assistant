@@ -56,7 +56,7 @@ def recognize_main():  #to recognize commands using the audio source
     with sr.Microphone() as source:
         r.adjust_for_ambient_noise(source)
         print("Listening for commands...")
-        audio = r.listen(source, phrase_time_limit=6)
+        audio = r.listen(source, phrase_time_limit=10)
     try:
         data = r.recognize_google(audio).lower()
         print(f"You: {data}")
@@ -153,6 +153,7 @@ while True:
                 if "go back" in data or "end chat" in data or "close chat" in data:
                     print("Closing connection with AI")
                     Speak("Closing connection with AI")
+                    send_to_mqtt(CONTROL_TOPIC, "Assistant mode")
                     ai_mode = False
                     listening= True
 
