@@ -10,6 +10,7 @@ import setup
 from setup import display, rtc, font, font2, rtc_power, spi, touch, colors, arcadepix, bally, Sprite
 import alarm_test
 import assistant_module
+import schedule_track_sys
 
 saved_time = []
 
@@ -185,6 +186,10 @@ def update_time():
         t = read_rtc_time()
         print("Time:", t)
         #alarm_test.check_alarm(t)   # for alarm
+        
+        schedule_track_sys.check_for_tasks()
+        schedule_track_sys.notification_cooldown()
+        
         saved_time = t
       # Draw to TFT
         if t:
@@ -307,14 +312,6 @@ def today_schedule():
     
     
     
-def assistantui():
-    mic_sprite = Sprite("images/mic84-106.raw", 84, 106, display, 120, 80)
-    mic_sprite.draw()
-    time.sleep(5)
-    mutemic = Sprite("images/micmute84-106.raw", 84, 106, display, 120, 80)
-    mutemic.draw()
-    
-    
 def aimode_ui():
     #draw a small mic at the top right of the screen
     #with the same mute and unmute fuctionality
@@ -360,30 +357,41 @@ def display_ai_response(response):
         time.sleep(0.05)
 
 
-# 
-# def task_notification(task[], time):
-#     name= task["task"]
-#     priority = task["priority"]
-#     endtime = task["time_end"]
-#     endhour, endminute = map(int, task_startt.split(":"))  # coverting string to time format
-#     # ui elements
-#     display.fill_hrect(0,0,320,240, BLACK)
-#     #timer until the task finishes *full screen
-#     #option to quit
-#     #option to skip
-#     
-#     
-# def task_reminder(task[]):
-#     name = task["task"]
-#     priority = task["priority"]
-#     endtime = task["time_end"]
-#     endhour, endminute = map(int, task_startt.split(":"))
-#     
-#     
-#     # ui elements
-#     #small rectangular popup showing info
-#     
+
+def task_notification(task, time):
+    name= task["task"]
+    priority = task["priority"]
+    endtime = task["time_end"]
+    endhour, endminute = map(int, task_startt.split(":"))  # coverting string to time format
+    # ui elements
+    display.fill_hrect(0,0,320,240, BLACK)
+    print("Notification display")
+    #timer until the task finishes *full screen
+    #option to quit
+    #option to skip
     
+    
+
+
+def task_reminder(task,font):
+    
+    name = task["task"]
+    starthour, startmin = map(int, task["time"].split(":"))
+    endhour, endmin = map(int, task["time_end"].split(":"))
+    
+    display.fill_hrect(10,170, display.width -10, 60, WHITE)
+    display.draw_text(25, 20,name, font, BLACK)
+    display.draw_text(40, 40, f"{starthour}:{startmin}", font, BLACK)
+    display.draw_text(70, 40, f"to        {endhour}:{endmin}", font, BLACK)
+    display.fill_circle(display.width-30,205 , 20, RED)
+    
+
+def clear_notification():
+    display.fill_hrect(10,200, display.width -10, 60, BLACK)
+    
+    
+
+
 
 
 

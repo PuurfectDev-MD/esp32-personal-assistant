@@ -7,6 +7,7 @@ import ui_module
 import calendar_module as cal
 import alarm_test
 import assistant_module
+import schedule_track_sys
 
 
 WHITE   = 0xFFFF
@@ -44,44 +45,52 @@ while working:
   
 
     coords = touch.get_touch()
-    if coords is not None:
+    if coords is not None:  #if touch is detected
         x, y = coords
         print(f"x : {x}, y: {y}")
         
         menu_select = ui_module.panel_element_select(x,y)
-    
+        
+        
+        if ui_module.detect_circle_button_touch(25, 220, 20, x, y):
+            if not ui_module.side_panel_open:
+                ui_module.side_panel()
+                ui_module.side_panel_open = True
+            else:
+                #display.fill_hrect(0, 0, 200, 240, 0x0000)  # BLACK
+                ui_module.home()
+                ui_module.side_panel_button()    
+                ui_module.side_panel_open = False
+        
         if menu_select != 0:
             if menu_select == 1:
                 ui_module.today_schedule()
                
             if menu_select ==2:
                 assistant_module.assistant_begin()
+        
                 
     else:
         x,y =0,0
        
    
 
-    if ui_module.detect_circle_button_touch(25, 220, 20, x, y):
-        if not ui_module.side_panel_open:
-            ui_module.side_panel()
-            ui_module.side_panel_open = True
-        else:
-            #display.fill_hrect(0, 0, 200, 240, 0x0000)  # BLACK
-            ui_module.home()
-            ui_module.side_panel_button()    
-            ui_module.side_panel_open = False
 
     # Update RTC clock display every 30s
     ui_module.update_time()
     
-    if main_button.value() == 0:  # pressed
+    
+    if main_button.value() == 0:  # pressed -  to turn off the device
         working = False
         print("Working =", working)
         display.fill_hrect(0, 0, 320, 240, BLACK)
-        time.sleep(0.3)  # debounce
+        time.sleep(0.3) 
         
     time.sleep(0.2)
+
+
+
+
 
 
 
