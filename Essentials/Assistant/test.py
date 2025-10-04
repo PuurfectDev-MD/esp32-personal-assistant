@@ -27,6 +27,9 @@ def on_message(client, userdata, msg):  # when the broker recieves a message
     payload = msg.payload.decode()
     print(f"📩 Message received on {topic}: {payload}")
 
+    if topic == JARVIS_TOPIC:
+        Speak(payload)
+
     if topic == CONTROL_TOPIC:  #identifies which topic/stream the data is received from
         if payload == "wake":
             print("⚡ Wake command received from ESP32")
