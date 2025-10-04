@@ -38,6 +38,8 @@ last_update = 0
 ui_module.home()
 cal.connect_wifi()
 
+client = assistant_module.connect_mqtt()
+print("Connected to MQTT")
     
 
 while working:

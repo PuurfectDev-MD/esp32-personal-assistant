@@ -1,7 +1,7 @@
 import time
 from machine import Pin
 import utime
-from setup import display, rtc, font, font2, rtc_power, spi, touch
+from setup import display, rtc, font, font2, rtc_power, spi, touch, JARVIS_RESPONSE
 import ui_module
 import calendar_module as cal
 import assistant_module as assistant
@@ -42,6 +42,9 @@ def check_for_tasks():
             if (currenthour, currentminute) == (reminder_hour, reminder_minute) and task_status != "Yes":
                 ui_module.task_reminder(event, ui_module.font)
                 last_notification_time = (currenthour, currentminute)
+                print(f"Notification time = {currenthour}, {currentminute}")
+               # client.publish(JARVIS_RESPONSE,f"You have to complete the task {task_name} in 30 minutes.")
+                
                 
                 # reminder 
             if (currenthour, currentminute) == (taskhour, taskminute) and task_status != "Yes":
@@ -56,6 +59,7 @@ def notification_cooldown():
     
     if last_notification_time:
         cooldownhour, cooldownmin = alarm_test.add_minutes(last_notification_time,1)
+        print(f"Cooldown time = {cooldownhour},{cooldownmin}")
         if (currenthour, currentmin) >= (cooldownhour, cooldownmin):
             ui_module.clear_notification()
             last_notification_time = None

@@ -380,14 +380,14 @@ def task_reminder(task,font):
     endhour, endmin = map(int, task["time_end"].split(":"))
     
     display.fill_hrect(10,170, display.width -10, 60, WHITE)
-    display.draw_text(25, 20,name, font, BLACK)
-    display.draw_text(40, 40, f"{starthour}:{startmin}", font, BLACK)
-    display.draw_text(70, 40, f"to        {endhour}:{endmin}", font, BLACK)
-    display.fill_circle(display.width-30,205 , 20, RED)
+    display.draw_text(25, 180,name, font, RED, WHITE)
+    display.draw_text(40, 205, f"> {starthour}:{startmin}", font, RED, WHITE)
+    display.draw_text(120, 205, f" to {endhour}:{endmin}", font, RED, WHITE)
+    display.fill_circle(display.width-15,200 , 12, RED)
     
 
 def clear_notification():
-    display.fill_hrect(10,200, display.width -10, 60, BLACK)
+    display.fill_hrect(10,170, display.width -10, 60, BLACK)
     
     
 

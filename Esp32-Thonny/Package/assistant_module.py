@@ -82,6 +82,9 @@ def connect_mqtt():  # secures a conenction with the broker
             time.sleep(3)
             
 
+
+
+
 def talk_to_assistant():
     global client
     try:
