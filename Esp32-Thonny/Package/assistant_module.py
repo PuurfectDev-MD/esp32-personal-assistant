@@ -11,7 +11,7 @@ import ui_module
 import calendar_module as cal
 import ai_module
 
-
+client = None
 # LED pin
 led = machine.Pin(2, machine.Pin.OUT)
 
@@ -42,7 +42,6 @@ def sub_cb(topic, msg):
         elif msg.lower() == "led off":
             led.value(0)
         elif msg.lower() == "connect ai":
-           
             ai_mode = True
             ui_module.aimode_ui()
             connect_response = ai_module.ask_gpt("Introduce yourself with a greeting in short.")
@@ -64,7 +63,7 @@ def sub_cb(topic, msg):
         
 # Connect/reconnect MQTT
 def connect_mqtt():  # secures a conenction with the broker
-    global client
+    
     while True:
         try:
             client = MQTTClient(CLIENT_ID, BROKER_IP)  
@@ -116,12 +115,12 @@ def active_listening():
     
     
 
-def assistant_begin():
+def assistant_begin(client_connection):
+    global client
     display.clear()
     display.fill_hrect(0, 0, 320, 240, BLACK)
-  
-    client = connect_mqtt()
-    print("Connected to mqtt")
+    
+    client = client_connection
     print("Assistant on")
     active_listening()
     while not ai_mode:  # this seems not right
@@ -132,11 +131,3 @@ def assistant_begin():
     while ai_mode:
          ui_module.aimode_ui()
          
-
-
-
-
-
-
-
-

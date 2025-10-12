@@ -7,8 +7,9 @@ import ui_module
 import calendar_module as cal
 import alarm_test
 import assistant_module
+import comm_config
 import schedule_track_sys
-
+from schedule_track_sys import last_notification_time
 
 WHITE   = 0xFFFF
 BLACK   = 0x0000
@@ -34,12 +35,10 @@ print("touch initialized")
 rtc_power.value(1)
 
 last_update = 0
-
 ui_module.home()
 cal.connect_wifi()
 
-client = assistant_module.connect_mqtt()
-print("Connected to MQTT")
+client = comm_config.init_mqtt()
     
 
 while working:
@@ -69,7 +68,8 @@ while working:
                 ui_module.today_schedule()
                
             if menu_select ==2:
-                assistant_module.assistant_begin()
+                
+                assistant_module.assistant_begin(client)
         
                 
     else:
@@ -80,7 +80,8 @@ while working:
 
     # Update RTC clock display every 30s
     ui_module.update_time()
-    
+    schedule_track_sys.check_for_tasks()
+    schedule_track_sys.notification_cooldown()
     
     if main_button.value() == 0:  # pressed -  to turn off the device
         working = False
@@ -89,10 +90,3 @@ while working:
         time.sleep(0.3) 
         
     time.sleep(0.2)
-
-
-
-
-
-
-

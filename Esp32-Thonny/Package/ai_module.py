@@ -26,7 +26,7 @@ def ask_gpt(prompt):
             "role": "system",
             "content": (
                 "You are a helpful assistant. "
-                "The user's name is Kabber. "
+                "The user's name is Manish. "
                 "Always answer in less than 120 words."
                 "Keep the answers information packed but concise"
             )

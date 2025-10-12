@@ -84,9 +84,7 @@ def recognize_main():  #to recognize commands using the audio source
             print("You: LED off")
             send_to_mqtt(CONTROL_TOPIC,"LED off")
             Speak("The LED is off sir.")
-        elif "chantal" in data and "think" in data:
-            print("You want to know about her?")
-            Speak("Chantal is smart and pretty. Did u not know that?")
+  
             
         elif "connect" in data and "ai" in data:
             print("Connecting with AI")
@@ -169,4 +167,3 @@ while True:
                 pass
 
     time.sleep(0.2)
-

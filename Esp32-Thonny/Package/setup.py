@@ -171,5 +171,3 @@ class Sprite:
 
         except OSError as e:
             print(f"❌ Error drawing sprite {self.path}: {e}")
-
-

@@ -8,6 +8,7 @@ import assistant_module as assistant
 import ujson
 
 import alarm_test
+import comm_config
 
 last_notification_time = None
 
@@ -22,6 +23,7 @@ def subtract_minutes(time_tuple, minutes_to_subtract):
     return (new_hour, new_minute)
 
 def check_for_tasks():
+    client = comm_config.client
     global last_notification_time
     with open("tasks.json", "r") as f:
         data = ujson.load(f)
@@ -43,7 +45,7 @@ def check_for_tasks():
                 ui_module.task_reminder(event, ui_module.font)
                 last_notification_time = (currenthour, currentminute)
                 print(f"Notification time = {currenthour}, {currentminute}")
-               # client.publish(JARVIS_RESPONSE,f"You have to complete the task {task_name} in 30 minutes.")
+                client.publish(JARVIS_RESPONSE,f"You have to complete the task {task_name} in 30 minutes.")
                 
                 
                 # reminder 
@@ -64,4 +66,3 @@ def notification_cooldown():
             ui_module.clear_notification()
             last_notification_time = None
     
-
