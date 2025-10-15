@@ -3,7 +3,7 @@
 This project combines **ESP32 hardware** (running MicroPython) with a **Python server** on my laptop.
 
 
-#Functionalities:
+## Functionalities:
  > Schedule Tracker
  > Prodcutivity Statistics
  > Calnder api integrations to streamline daily routines
@@ -33,3 +33,7 @@ In cmd - cd '{path of the main folder}'
 ## To being the MQTT broker:
 cmd : mosquitto -c "C:\\Program Files\\mosquitto\\mosquitto.conf" -v
 *** -v means verbose, so you’ll see connection logs.
+
+
+## Circuit
+https://app.cirkitdesigner.com/project/c7db6028-1e50-4902-aac4-e5fd2844787d

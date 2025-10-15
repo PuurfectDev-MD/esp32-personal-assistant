@@ -339,18 +339,18 @@ def aimode_ui():
         
 def display_ai_response(response):
     display.fill_hrect(0, 0, 320, 240, BLACK)
-    x, y= 0, 20
+    x, y= 10, 20
     max_width = 300
     line_height = 20
     
     for i,word in enumerate(response.split()):
         word_len = len(word) * 12
         if x + word_len > max_width:
-            x = 0
+            x = 10
             y +=line_height
         if  y > 210:
             display.fill_hrect(0,0,320,240, BLACK)
-            x,y = 0,20
+            x,y = 10,20
         
         display.draw_text(x, y, word, font, WHITE)
         x = x+word_len + 15
@@ -390,8 +390,3 @@ def clear_notification():
     display.fill_hrect(10,170, display.width -10, 60, BLACK)
     
     
-
-
-
-
-

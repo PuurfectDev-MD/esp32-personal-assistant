@@ -12,6 +12,20 @@ import comm_config
 
 last_notification_time = None
 
+
+def reset_tasks_file():
+    empty_data = {
+        "tasks": []
+    }
+    
+    with open("tasks.json", "w") as f:
+        ujson.dump(empty_data, f)
+    
+    print("Tasks file reset to empty!")
+    
+    
+
+
 def subtract_minutes(time_tuple, minutes_to_subtract):
     hour, minute = time_tuple
     total_minutes = hour * 60 + minute - minutes_to_subtract
@@ -46,6 +60,7 @@ def check_for_tasks():
                 last_notification_time = (currenthour, currentminute)
                 print(f"Notification time = {currenthour}, {currentminute}")
                 client.publish(JARVIS_RESPONSE,f"You have to complete the task {task_name} in 30 minutes.")
+                print("message spoken")
                 
                 
                 # reminder 

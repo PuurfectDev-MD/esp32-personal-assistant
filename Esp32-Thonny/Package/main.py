@@ -30,7 +30,9 @@ while not working:
         
     
   
-  
+schedule_track_sys.reset_tasks_file()
+
+
 print("touch initialized")
 rtc_power.value(1)
 
@@ -38,8 +40,10 @@ last_update = 0
 ui_module.home()
 cal.connect_wifi()
 
+cal. get_calendar_events_today()
+
 client = comm_config.init_mqtt()
-    
+
 
 while working:
     #print(main_button.value())
