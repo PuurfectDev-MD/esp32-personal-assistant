@@ -6,6 +6,11 @@ __pycache__/
 venv*/
 *.env
 
+# Virtual environments
+study_env/
+venv/
+env/
+
 # VS Code
 .vscode/
 
@@ -19,3 +24,6 @@ venv*/
 # General
 .DS_Store
 Thumbs.db
+
+# YOLO results
+runs/
