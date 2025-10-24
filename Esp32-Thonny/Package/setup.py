@@ -52,6 +52,7 @@ display = Display(spi,
 
 # Touch (same SPI bus, different CS)
 touch = Touch(spi, cs=Pin(12), width=320, height=240)
+home_button = Pin(34, Pin.IN) 
 
 
 #for the clock

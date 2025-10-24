@@ -13,10 +13,13 @@ import assistant_module
 import schedule_track_sys
 
 saved_time = []
+focus_tags = ["Study", "Work", "Research","Relax"]
 
 rtc_power.value(1)  # Power ON at start
 last_update = 0
 
+
+focus_begin = False
 menu_element_offset = 40
 side_panel_open = False
 no_side_panel_elements = 4
@@ -29,6 +32,13 @@ side_panel_elements = [
 ]
 
 
+home_icons = [
+    (0, 0, 0,0),
+    (0, 0, 0,0),
+    (0, 0, 0,0),
+    (0, 0, 0,0),
+    (26,23, 57, 100)  #For focus
+    ]
 NONE = 0
 TO_DO = 1
 CHAT = 2
@@ -109,6 +119,14 @@ def panel_element_select(touchx, touchy):
             return i+1
     return NONE
 
+def home_option_select(touchx, touchy):
+    for i, (x0, y0, w, h) in enumerate(home_icons):
+        if detect_rect_touch(x0, y0,w,h ,touchx, touchy):
+            print(f"{i+1}Option selected in icon menu")
+            return i+1
+    return NONE
+            
+
 
 def get_current_time(retries=3):
     global saved_time
@@ -169,6 +187,9 @@ def home():
     
     alarm_sprite = Sprite("images/alarmclock64-64.raw", 64, 64, display, 230, 60)
     alarm_sprite.draw()
+    
+    focus_sprite = Sprite("images/focus_logo64-64.raw", 64, 64, display, 20, 140)
+    focus_sprite.draw()
 
     
     
@@ -390,3 +411,19 @@ def clear_notification():
     display.fill_hrect(10,170, display.width -10, 60, BLACK)
     
     
+def focus_ui():
+    global focus_begin
+    #clears screen
+    #selects a subject for stats
+    #starts the circle timer
+    
+    display.fill_hrect(0, 0, 320, 240, BLACK)
+    
+    for i,item in enumerate(focus_tags):
+        display.draw_text(10, 20 + (i*60), item, font, WHITE)
+        
+    display.fill_circle(200, 120, 100, WHITE)
+    display.draw_text(150,100, "0 : 00", font, RED)
+      
+    
+

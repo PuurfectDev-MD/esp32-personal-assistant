@@ -1,8 +1,8 @@
 from PIL import Image
 
 # --- Configuration ---
-input_file = "Schedule.png"     # Your PNG image
-output_file = "schedule64-64.raw"    # Output raw file
+input_file = "focus_logo.png"     # Your PNG image
+output_file = "focus_logo64-64.raw"    # Output raw file
 width = 64               # Target width
 height = 64               # Target height
 
