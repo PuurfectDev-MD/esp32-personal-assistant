@@ -1,8 +1,7 @@
-# main.py
 import time
 from machine import Pin
 import utime
-from setup import display, rtc, font, font2, rtc_power, spi, touch
+from setup import display, rtc, font, font2, rtc_power, spi, touch,yellow_button
 import ui_module
 import calendar_module as cal
 import alarm_test
@@ -10,6 +9,7 @@ import assistant_module
 import comm_config
 import schedule_track_sys
 from schedule_track_sys import last_notification_time
+from focus import focused
 
 WHITE   = 0xFFFF
 BLACK   = 0x0000
@@ -27,7 +27,7 @@ while not working:
         print(main_button.value())
         working = True
         print(f"Device activated, Working :{working}")
-        
+
     
   
 schedule_track_sys.reset_tasks_file()
@@ -72,6 +72,12 @@ while working:
         if option_select != 0:
             if option_select == 5:
                 ui_module.focus_ui()
+                if ui_module.detect_circle_button_touch(200, 120, 100, x, y):
+                    focused = not focused  # flips the state if the button is pressed
+                    if focused:
+                        focus.focused_period()
+                    
+                
         
         if ui_module.detect_circle_button_touch(25, 220, 20, x, y):
             if not ui_module.side_panel_open:

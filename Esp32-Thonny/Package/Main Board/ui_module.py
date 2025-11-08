@@ -422,8 +422,8 @@ def focus_ui():
     for i,item in enumerate(focus_tags):
         display.draw_text(10, 20 + (i*60), item, font, WHITE)
         
-    display.fill_circle(200, 120, 100, WHITE)
-    display.draw_text(150,100, "0 : 00", font, RED)
+    display.fill_circle(230, 120, 80, WHITE)
+    display.draw_text(190,105, "0 : 00", font, BLACK, WHITE)
       
     
 

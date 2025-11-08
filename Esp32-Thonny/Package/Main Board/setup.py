@@ -11,14 +11,16 @@ from xglcd_font import XglcdFont
 import utime   # for the clock
 from ds3231 import DS3231
 
+yellow_button = Pin(34, Pin.IN) 
 
+#init a potentiometer
 
 # WiFi credentials
-WIFI_SSID = "Manish"
-WIFI_PASS = "passwordMANISH24"
+WIFI_SSID = "imternet"
+WIFI_PASS = "connecttest"
 
 # MQTT broker
-BROKER_IP = "192.168.0.116"
+BROKER_IP = "192.168.121.168"
 CLIENT_ID = "esp32_client"
 JARVIS_RESPONSE = "jarvis/responses"
 CONTROL_TOPIC   = "jarvis/control"
@@ -52,7 +54,7 @@ display = Display(spi,
 
 # Touch (same SPI bus, different CS)
 touch = Touch(spi, cs=Pin(12), width=320, height=240)
-home_button = Pin(34, Pin.IN) 
+
 
 
 #for the clock
@@ -172,3 +174,5 @@ class Sprite:
 
         except OSError as e:
             print(f"❌ Error drawing sprite {self.path}: {e}")
+
+
