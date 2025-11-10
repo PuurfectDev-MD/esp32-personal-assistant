@@ -6,6 +6,7 @@ import machine
 import setup
 from setup import display, rtc, font, font2, rtc_power, spi, touch, colors, arcadepix
 import ui_module
+import esp32_comm_to_cam as camboard
 focused = False
 focused_time = (None, None)
 question_button = setup.yellow_button
@@ -16,6 +17,8 @@ WHITE   = 0xFFFF
 BLACK   = 0x0000
 
 def begin_focus():
+    camboard.send_message("begin focus")
+    print("Message Being focus sent. Focus mode started")
     timer_time = timer()
        
 
@@ -42,6 +45,7 @@ def timer(t=None):
         if coords is not None:
             x, y = coords
             if ui_module.detect_circle_button_touch(230, 120, 80, x, y):
+                camboard.send_message("end focus")
                 focused = False
                 break
         if question_button ==1:
@@ -60,8 +64,8 @@ def timer(t=None):
 
 
 focused = True
-setup.rtc_power.value(1)
 ui_module.focus_ui()
+print("Beigning camera feed")
 begin_focus()
 
 

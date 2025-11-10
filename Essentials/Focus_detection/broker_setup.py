@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 from ultralytics import YOLO
 
-BROKER_IP = "192.168.121.168"   # broker IP
+BROKER_IP = "192.168.22.168"   # broker IP
 
 IMAGE_FROM_ESP = "image/esp"
 IMAGE_FROM_BROKER = "image/broker"
