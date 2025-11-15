@@ -1,10 +1,16 @@
-BROKER_IP = " 192.168.121.168"
+import network
+import time
 
+BROKER_IP = "192.168.137.214"
 
+main_board_ip = "192.168.137.195"
+cam_board_ip = "192.168.137.155"
 # WiFi Configuration
 SSID = "imternet"
 PASSWORD = "connecttest"
 
+
+focus = False
 
 def connect_wifi():
     """Connect to WiFi"""
@@ -26,3 +32,4 @@ def connect_wifi():
     return None
 
 ip_address = connect_wifi()
+

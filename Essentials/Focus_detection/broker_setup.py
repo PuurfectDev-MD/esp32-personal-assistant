@@ -9,7 +9,7 @@ import json
 from pathlib import Path
 from ultralytics import YOLO
 
-BROKER_IP = "192.168.22.168"   # broker IP
+BROKER_IP = "192.168.137.214"   # broker IP
 
 IMAGE_FROM_ESP = "image/esp"
 IMAGE_FROM_BROKER = "image/broker"
@@ -86,20 +86,24 @@ def decode_base64_image(image_base64):
         return None
             
 
-
 def process_detection_results(results):
-    pen_detected =  None
+    pen_detected = None
 
     for result in results:
-        for box in result:
-            confidence = float(box.conf[0])
-
-            if confidence >0.4:
-                pen_detected = True
-                return pen_detected
+        # Check if there are any detections in this result
+        if result.boxes is not None and len(result.boxes) > 0:
+            # Access the boxes directly
+            boxes = result.boxes
+            # Get confidence scores
+            confidences = boxes.conf
+            
+            for conf in confidences:
+                confidence = float(conf)
+                if confidence > 0.4:
+                    pen_detected = True
+                    return pen_detected
     
-
-
+    return pen_detected
 
 
 

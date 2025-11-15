@@ -6,7 +6,8 @@ import gc
 from umqtt.simple import MQTTClient
 import ubinascii
 import setup
-from esp32_comm 
+import esp32_comm
+from setup import focus
 
 
 IMAGE_FROM_ESP = "image/esp"
@@ -74,7 +75,7 @@ def main():
     last_capture = 0
     capture_interval = 10000
     
-    while True:
+    while focus:
         try:
             current_time = time.ticks_ms()
             if time.ticks_diff(current_time, last_capture) > capture_interval:
@@ -85,6 +86,9 @@ def main():
                 
                 del image_text
                 gc.collect()
+            message = esp32_comm.get_received_message()
+            if message = "end focus":
+                focus = False
             
             time.sleep(0.1)
             

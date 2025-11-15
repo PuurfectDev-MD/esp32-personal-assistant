@@ -1,5 +1,5 @@
-#main board ip : 192.168.22.207
-#camera board ip : 192.168.22.29
+#main board ip : 192.168.137.195
+#camera board ip : 192.168.137.155
 
 import network
 import time
