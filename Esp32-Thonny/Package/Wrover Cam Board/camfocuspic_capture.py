@@ -84,16 +84,6 @@ def main():
                 esp32_comm.send_to_mqtt(IMAGE_FROM_ESP, image_text)
                 last_capture = current_time
                 
-                #for the website
-                connection.send('HTTP/1.1 200 OK\r\n')
-                connection.send('Content-Type: image/jpeg\r\n')
-                connection.send('Content-Length: {}\r\n'.format(len(jpeg_data)))
-                connection.send('Cache-Control: no-cache\r\n')
-                connection.send('Connection: close\r\n')
-                connection.send('\r\n')  # Blank line before body
-                connection.send(jpeg_data)  # Send the binary JPEG data
-                
-                print(f"✅ Image sent ({len(jpeg_data)} bytes)")
                 del image_text
                 gc.collect()
             message = esp32_comm.get_received_message()

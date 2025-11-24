@@ -23,8 +23,14 @@ def on_message(client, userdata, msg):
 
     if topic == IMAGE_FROM_ESP:
         print("Image recieved on broker")
+        timestamp = int(time.time())
         image = decode_base64_image(payload)
-        results = model.predict(image, save = True, conf = 0.4)
+        results = model.predict(
+            image, save = True,
+              conf = 0.4,
+               project="vision_img",
+               name = f"detection_{timestamp}"
+              )
         detection_results = process_detection_results(results)
         print(detection_results)
 
