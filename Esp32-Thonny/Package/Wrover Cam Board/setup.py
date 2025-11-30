@@ -1,13 +1,11 @@
 import network
 import time
 
-BROKER_IP = "192.168.137.214"
+BROKER_IP = "192.168.1.216"
 
-main_board_ip = "192.168.137.195"
-cam_board_ip = "192.168.137.155"
-# WiFi Configuration
-SSID = "imternet"
-PASSWORD = "connecttest"
+
+SSID = "Manoj"
+PASSWORD = "manish25"
 
 
 focus = False

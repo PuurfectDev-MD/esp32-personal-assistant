@@ -9,10 +9,10 @@ import json
 from pathlib import Path
 from ultralytics import YOLO
 
-BROKER_IP = "192.168.137.214"   # broker IP
+BROKER_IP = "192.168.1.216"   # broker IP
 
 IMAGE_FROM_ESP = "image/esp"
-IMAGE_FROM_BROKER = "image/broker"
+VISION_RESULTS = "vision/results"
 
 
 
@@ -32,6 +32,7 @@ def on_message(client, userdata, msg):
                name = f"detection_{timestamp}"
               )
         detection_results = process_detection_results(results)
+        send_to_mqtt(VISION_RESULTS, detection_results)
         print(detection_results)
 
 
@@ -93,7 +94,10 @@ def decode_base64_image(image_base64):
             
 
 def process_detection_results(results):
-    pen_detected = None
+    detection_data = {
+        "pen_detected" : None,
+        "focus_score" : 0
+    }
 
     for result in results:
         # Check if there are any detections in this result
@@ -106,18 +110,24 @@ def process_detection_results(results):
             for conf in confidences:
                 confidence = float(conf)
                 if confidence > 0.4:
-                    pen_detected = True
-                    return pen_detected
+                    detection_data["focus_score"] += 1
+                    detection_data["pen_detected"] = True
+                    
     
-    return pen_detected
+    return detection_data
 
 
 
 def send_to_mqtt(topic, message):
-    client.publish(topic, message)
+    try: 
+        if isinstance(message, dict):
+             message = json.dumps(message)
+        client.publish(topic, message)
+    except Exception as e:
+        print(f"❌ Error sending to MQTT: {e}")
 
 
-
+    
 def main():
     while True:
             client.loop(timeout=1.0)

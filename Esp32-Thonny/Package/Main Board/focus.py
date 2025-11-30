@@ -9,7 +9,7 @@ import ui_module
 import esp32_comm_to_cam as camboard
 focused = False
 focused_time = (None, None)
-question_button = setup.yellow_button
+yellow_button = setup.yellow_button
 timer_time = (0,0)
 
 
@@ -48,7 +48,7 @@ def timer(t=None):
                 camboard.send_message("end focus")
                 focused = False
                 break
-        if question_button ==1:
+        if yellow_button ==1:
             pass
             #draws a mic
             #send a message to MQTT to listen

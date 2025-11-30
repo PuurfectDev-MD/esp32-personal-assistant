@@ -5,10 +5,15 @@ import gc
 import machine
 import usocket as socket
 import _thread
+from html_content import html
+import esp32_comm
+from esp32_comm import client
+from machine import Pin
+from setup import focus
 
-WIFI_SSID = "imternet"
-WIFI_PASS = "connecttest"
+boot_button = Pin(0, Pin.IN, Pin.PULL_UP)
 
+threads = {}
 current_image = None
 image_lock = _thread.allocate_lock()
 
@@ -16,98 +21,26 @@ image_lock = _thread.allocate_lock()
 led = machine.Pin(2, machine.Pin.OUT)
 led.value(0)
 
-def connect_wifi():
-    wlan = network.WLAN(network.STA_IF)
-    wlan.active(False)
-    time.sleep(0.5)
-    wlan.active(True)
-    wlan.connect(WIFI_SSID, WIFI_PASS)
-    print("Connecting to Wi-Fi...", end="")
-    while not wlan.isconnected():
-        print(".", end="")
-        time.sleep(0.5)
-    print("\n✅ Connected:", wlan.ifconfig())
 
+def check_button():
+    global threads, focus
+    if boot_button.value() == 0: #pressed
+        time.sleep(0.2)
+        
+        if boot_button.value() == 0:
+            print("Focus mode stopped")
+            
+            for thread_name, thread_id in threads.items():
+                try:
+                    _thread.exit(thread_id)
+                except:
+                    pass
+                
+            threads = {}
+            focus = False
+            led.value(0)
 
-
-html = '''<!DOCTYPE html>
-<html>
-<head>
-    <title>ESP32 Control Panel</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <script>
-        setInterval(function() {
-            document.getElementById('camImage').src = '/image?t=' + new Date().getTime();
-        }, 10000);
-    </script>
-    
-    <style>
-        body { 
-            font-family: Arial; 
-            background: #f0f0f0; 
-            margin: 0; 
-            padding: 20px; 
-        }
-        .container { 
-            background: white; 
-            padding: 20px; 
-            border-radius: 10px; 
-            max-width: 400px; 
-            margin: 0 auto; 
-        }
-        .btn { 
-            padding: 10px 15px; 
-            margin: 5px; 
-            border: none; 
-            border-radius: 5px; 
-            color: white; 
-            cursor: pointer; 
-        }
-        .on { 
-            background: #4CAF50; 
-        }
-        .off { 
-            background: #f44336; 
-        }
-        .image-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        #camImage { 
-            max-width: 100%; 
-            border: 2px solid #666; 
-            border-radius: 5px;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
-    </style>
-</head>
-<body>
-    <div class="image-container">
-        <img id="camImage" src="/image" alt="Camera Feed">
-    </div>
-    
-    <div class="container">
-        <h2>ESP32 Control Panel</h2>
-        <form>
-            <p>LED 1: 
-                <button name="LED1" value="ON" class="btn on">ON</button>
-                <button name="LED1" value="OFF" class="btn off">OFF</button>
-            </p>
-            <p>LED 2: 
-                <button name="LED2" value="ON" class="btn on">ON</button>
-                <button name="LED2" value="OFF" class="btn off">OFF</button>
-            </p>
-        </form>
-    </div>
-</body>
-</html>'''
-
-
-
-
+        
 
 def setup_camera():
     """Optimized camera setup"""
@@ -233,14 +166,21 @@ def begin_https():
 
 
 
-connect_wifi()
-setup_camera()
-_thread.start_new_thread(update_camera_image,())
-_thread.start_new_thread(begin_https,())
+def init_focus():
+    global focus
+    focus= True
+    setup_camera()
+    if not esp32_comm.client:
+        esp32_comm.connect_mqtt()
+
+    print("✅ SYSTEM READY!")
+        
+    threads["camera"] =  _thread.start_new_thread(update_camera_image,())   #takes a pic and update a variable
+    threads["http"] = _thread.start_new_thread(begin_https,())     #website affairs
+    threads["mqtt"] = _thread.start_new_thread(esp32_comm.check_mqtt_vision_results,())  #MQTT and printing
 
 
-
-
-while True:
-    time.sleep(1)
+    while focus:
+        check_button()
+        time.sleep(0.1)
 
