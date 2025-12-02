@@ -10,7 +10,11 @@ import esp32_comm
 from esp32_comm import client
 from machine import Pin
 from setup import focus
+import ubinascii
+from umqtt.simple import MQTTClient
+import picoweb
 
+IMAGE_FROM_ESP = "image/esp"
 boot_button = Pin(0, Pin.IN, Pin.PULL_UP)
 
 threads = {}
@@ -69,6 +73,25 @@ def setup_camera():
 
 
 
+
+def picture_to_text(picture):
+        image_size = len(picture)
+        if image_size > 200000:  # ~200KB to be safe
+            print("⚠️ Image too large, reducing quality...")
+            camera.quality(8)  # Lower quality
+            picture = camera.capture()
+
+        print("🔄 Converting to Base64...")
+        image_base64 = ubinascii.b2a_base64(picture).decode('utf-8').strip()
+
+
+        del picture
+        gc.collect()
+
+        return image_base64
+
+    
+
 def capture_image():
     picture =  camera.capture()  # Returns binary JPEG data
     print("Image Captured")
@@ -81,15 +104,36 @@ def update_camera_image():
     while True:
         try:
             new_image = capture_image()
+            
             with image_lock:
                 current_image = new_image
-            gc.collect()
-            time.sleep(10)  # Update every 10 seconds
+                print("Current image updated")
+                image_text = picture_to_text(new_image)
+                print("Image to text successfull")
+                
+                     
+                if image_text:
+                    print(f"📤 Sending to MQTT: Image text")
+                    esp32_comm.send_to_mqtt(IMAGE_FROM_ESP, image_text)
+                    
+                    # Clear large base64 string IMMEDIATELY after use
+                    del image_text
+                    gc.collect()
+                    print("✅ MQTT send complete, memory cleaned")
+                else:
+                    print("❌ Failed to create image text")
+                
+               
+            time.sleep(10)
+                    
+                    
         except Exception as e:
             print(f"Camera error: {e}")
             time.sleep(5)
 
 
+
+    
 
 def begin_https():
     
@@ -138,7 +182,7 @@ def begin_https():
                         connection.send('Cache-Control: no-cache\r\n')
                         connection.send('Connection: close\r\n\r\n')
                         connection.sendall(current_image)
-                        print(f"✅ Image sent ({len(current_image)} bytes)")
+                        print(f"✅ Image sent")
                 
                     else:
                         connection.send('HTTP/1.1 404 Not Found\r\n\r\nNo image available')
@@ -167,15 +211,18 @@ def begin_https():
 
 
 def init_focus():
+
     global focus
     focus= True
     setup_camera()
+    time.sleep(2)
+    esp32_comm.init_communication()
     if not esp32_comm.client:
         esp32_comm.connect_mqtt()
 
     print("✅ SYSTEM READY!")
         
-    threads["camera"] =  _thread.start_new_thread(update_camera_image,())   #takes a pic and update a variable
+    threads["camera"] = _thread.start_new_thread(update_camera_image,())   #takes a pic and update a variable
     threads["http"] = _thread.start_new_thread(begin_https,())     #website affairs
     threads["mqtt"] = _thread.start_new_thread(esp32_comm.check_mqtt_vision_results,())  #MQTT and printing
 
@@ -184,3 +231,9 @@ def init_focus():
         check_button()
         time.sleep(0.1)
 
+
+
+
+
+
+init_focus()
