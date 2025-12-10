@@ -14,6 +14,8 @@ import schedule_track_sys
 
 saved_time = []
 focus_tags = ["Study", "Work", "Research","Relax"]
+current_page = "home"
+
 
 rtc_power.value(1)  # Power ON at start
 last_update = 0
@@ -33,10 +35,10 @@ side_panel_elements = [
 
 
 home_icons = [
-    (0, 0, 0,0),
-    (0, 0, 0,0),
-    (0, 0, 0,0),
-    (0, 0, 0,0),
+    (26, 191, 45,5),
+    (158, 191, 8,5),
+    (246, 191, 8,9),
+    (257, 137, 40,65),
     (26,23, 57, 100)  #For focus
     ]
 NONE = 0
@@ -425,5 +427,8 @@ def focus_ui():
     display.fill_circle(230, 120, 80, WHITE)
     display.draw_text(190,105, "0 : 00", font, BLACK, WHITE)
       
-    
+
+
+
+
 
