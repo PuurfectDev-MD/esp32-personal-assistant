@@ -58,7 +58,7 @@ WIFI_PASS = "passwordMANISH24"
 
 # ====== Google Calendar API Settings ======
 CALENDAR_ID = "manish.dhakal2020@gmail.com" 
-API_KEY = "AIzaSyCAEVwduzMjVHNJi0voS1kDUCcg-XYY7Rg"
+API_KEY = "None"
 BASE_URL = "https://www.googleapis.com/calendar/v3/calendars"
 
 
