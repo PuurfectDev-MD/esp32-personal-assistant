@@ -13,8 +13,7 @@ import assistant_module
 import schedule_track_sys
 
 saved_time = []
-focus_tags = ["Study", "Work", "Research","Relax"]
-current_page = "home"
+
 
 
 rtc_power.value(1)  # Power ON at start
@@ -413,19 +412,7 @@ def clear_notification():
     display.fill_hrect(10,170, display.width -10, 60, BLACK)
     
     
-def focus_ui():
-    global focus_begin
-    #clears screen
-    #selects a subject for stats
-    #starts the circle timer
-    
-    display.fill_hrect(0, 0, 320, 240, BLACK)
-    
-    for i,item in enumerate(focus_tags):
-        display.draw_text(10, 20 + (i*60), item, font, WHITE)
-        
-    display.fill_circle(230, 120, 80, WHITE)
-    display.draw_text(190,105, "0 : 00", font, BLACK, WHITE)
+
       
 
 

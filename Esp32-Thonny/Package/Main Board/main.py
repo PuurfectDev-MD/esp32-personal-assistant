@@ -8,10 +8,11 @@ import assistant_module
 import comm_config
 import schedule_track_sys
 import focus
-
+import ui_state
 from ui_pages.home import HomePage
 # from ui_pages.todo import TodoPage
-from ui_pages.focus import FocusPage
+from ui_pages.calendar_pg import CalendarPage
+from ui_pages.foucs_pg import FocusPage
 # etc.
 
 WHITE = 0xFFFF
@@ -49,10 +50,8 @@ async def async_init():
     # init engine (MQTT or similar)
     engine = comm_config.init_mqtt()  
 
-    # Create page instances
-    global current_page
-    current_page = HomePage(engine)  # active page at boot
-
+    ui_state.set_page("home", HomePage(engine))
+    
     return engine
 
 
@@ -77,9 +76,10 @@ async def touch_loop():
     """Send touch events to the current page."""
     while True:
         coords = touch.get_touch()
-        if coords and current_page:
+        if coords and ui_state.current_page_obj:
             x, y = coords
-            current_page.handle_touch(x, y)
+            ui_state.current_page_obj.handle_touch(x, y)
+            
         await asyncio.sleep_ms(30)
 
 

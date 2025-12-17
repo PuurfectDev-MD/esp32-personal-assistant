@@ -3,6 +3,9 @@ import ui_module
 import assistant_module
 import focus
 
+
+from ui_pages.foucs_pg import FocusPage
+from ui_pages.calendar_pg import CalendarPage
 class HomePage:
 
     def __init__(self, engine=None):
@@ -37,10 +40,12 @@ class HomePage:
         # 3. Normal home page options
         option = ui_module.home_option_select(x, y)
         
+        if option == 1:
+            page = CalendarPage()
+            ui_state.set_page("calendar", page)
         if option == 5:
-#             ui_module.focus_ui()
-#             focus.focused = True
-#             focus.begin_focus()
+            focus = FocusPage()
+            ui_state.set_page("focus", focus)
             return
       
             
